@@ -8,11 +8,14 @@ import { RoutesView } from "$/components/RoutesView";
 import { ScrollWrapper } from "../ScrollWrapper";
 
 const mapDataToKeys = (data: string[][]) =>
-  data.map(([destination = "N/A", gateway = "N/A", protocol = "N/A"]) => ({
-    destination,
-    gateway,
-    protocol,
-  }));
+  data.map(
+    ([destination = "N/A", gateway = "N/A", protocol = "N/A"]) =>
+      protocol && {
+        destination,
+        gateway,
+        protocol,
+      }
+  );
 
 export const RoutesCompare = () => {
   const { isUpMd } = useMediaQuery();
@@ -23,6 +26,9 @@ export const RoutesCompare = () => {
     setRightData(result.data);
   const onLeftUploadAccepted = (result: { data: string[][] }) =>
     setLeftData(result.data);
+
+  const onRightUploadRemoved = () => setRightData([]);
+  const onLeftUploadRemoved = () => setLeftData([]);
 
   return (
     <Grid
@@ -36,11 +42,16 @@ export const RoutesCompare = () => {
         <ScrollWrapper>
           <Grid container gap={4} direction="column">
             <Grid item>
-              <UploadFile onUploadAccepted={onLeftUploadAccepted} />
+              <UploadFile
+                onUploadAccepted={onLeftUploadAccepted}
+                onRemoveFile={onLeftUploadRemoved}
+              />
             </Grid>
-            <Grid item xs>
-              <RoutesView data={mapDataToKeys(leftData)} />
-            </Grid>
+            {!!leftData.length && (
+              <Grid item xs>
+                <RoutesView data={mapDataToKeys(leftData)} />
+              </Grid>
+            )}
           </Grid>
         </ScrollWrapper>
       </Grid>
@@ -56,14 +67,19 @@ export const RoutesCompare = () => {
             sx={{ overflowY: "scroll" }}
           >
             <Grid item>
-              <UploadFile onUploadAccepted={onRightUploadAccepted} />
-            </Grid>
-            <Grid item xs>
-              <RoutesView
-                data={mapDataToKeys(rightData)}
-                dataToCompare={mapDataToKeys(leftData)}
+              <UploadFile
+                onUploadAccepted={onRightUploadAccepted}
+                onRemoveFile={onRightUploadRemoved}
               />
             </Grid>
+            {!!rightData.length && (
+              <Grid item xs>
+                <RoutesView
+                  data={mapDataToKeys(rightData)}
+                  dataToCompare={mapDataToKeys(leftData)}
+                />
+              </Grid>
+            )}
           </Grid>
         </ScrollWrapper>
       </Grid>

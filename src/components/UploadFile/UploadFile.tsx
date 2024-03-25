@@ -4,11 +4,13 @@ import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import compose from "ramda/src/compose";
 import { useCSVReader } from "react-papaparse";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 interface IProps {
+  onRemoveFile: VoidFunction;
   onUploadAccepted: (results: { data: string[][] }) => void;
 }
 
@@ -17,7 +19,11 @@ export const UploadFile = (props: IProps) => {
   const { CSVReader } = useCSVReader();
 
   return (
-    <CSVReader onUploadAccepted={props.onUploadAccepted}>
+    <CSVReader
+      skipEmptyLines
+      accept="text/csv, .csv"
+      onUploadAccepted={props.onUploadAccepted}
+    >
       {({ getRootProps, acceptedFile, getRemoveFileProps }: any) => (
         <>
           <Grid container spacing={2}>
@@ -43,6 +49,10 @@ export const UploadFile = (props: IProps) => {
               <Button
                 {...getRemoveFileProps()}
                 color="error"
+                onClick={compose(
+                  props.onRemoveFile,
+                  getRemoveFileProps().onClick
+                )}
                 startIcon={<DeleteIcon />}
               >
                 Remove
