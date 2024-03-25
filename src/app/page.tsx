@@ -1,3 +1,5 @@
+import { RoutesCompare } from "$/components/RoutesCompare";
+
 export default function Home() {
-  return <div>home</div>;
+  return <RoutesCompare />;
 }
