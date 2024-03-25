@@ -8,14 +8,11 @@ import { RoutesView } from "$/components/RoutesView";
 import { ScrollWrapper } from "../ScrollWrapper";
 
 const mapDataToKeys = (data: string[][]) =>
-  data.map(
-    ([destination = "N/A", gateway = "N/A", protocol = "N/A"]) =>
-      protocol && {
-        destination,
-        gateway,
-        protocol,
-      }
-  );
+  data.map(([destination = "N/A", gateway = "N/A", protocol = "N/A"]) => ({
+    destination,
+    gateway,
+    protocol,
+  }));
 
 export const RoutesCompare = () => {
   const { isUpMd } = useMediaQuery();
