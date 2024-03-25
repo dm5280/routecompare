@@ -7,9 +7,8 @@ import { useMediaQuery } from "$/hooks/useMediaQuery";
 import { RoutesView } from "$/components/RoutesView";
 import { ScrollWrapper } from "../ScrollWrapper";
 
-// Destination/Gateway/Protocol.
 const mapDataToKeys = (data: string[][]) =>
-  data.map(([destination, gateway, protocol]) => ({
+  data.map(([destination = "N/A", gateway = "N/A", protocol = "N/A"]) => ({
     destination,
     gateway,
     protocol,
@@ -51,8 +50,8 @@ export const RoutesCompare = () => {
       <Grid item xs display="flex" alignItems="center" justifyContent="center">
         <ScrollWrapper>
           <Grid
-            container
             gap={4}
+            container
             direction="column"
             sx={{ overflowY: "scroll" }}
           >
@@ -60,7 +59,10 @@ export const RoutesCompare = () => {
               <UploadFile onUploadAccepted={onRightUploadAccepted} />
             </Grid>
             <Grid item xs>
-              <RoutesView data={mapDataToKeys(rightData)} />
+              <RoutesView
+                data={mapDataToKeys(rightData)}
+                dataToCompare={mapDataToKeys(leftData)}
+              />
             </Grid>
           </Grid>
         </ScrollWrapper>

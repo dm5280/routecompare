@@ -3,12 +3,13 @@ import Typography from "@mui/material/Typography";
 
 interface IProps {
   label: string;
-  qty: number | string;
+  color?: string;
+  qty?: number | string;
 }
 
 export const TreeItemLabel = (props: IProps) => (
   <Stack direction="row" justifyContent="space-between">
-    <Typography>{props.label}</Typography>
-    <Typography>{props.qty}</Typography>
+    <Typography color={props.color}>{props.label}</Typography>
+    {props.qty && <Typography color={props.color}>{props.qty}</Typography>}
   </Stack>
 );
