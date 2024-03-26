@@ -15,7 +15,7 @@ import { GatewayTreeItem } from "./GatewayTreeItem";
 interface IProps {
   protocol: string;
   rootIdx: string;
-  data: IDataObj[];
+  data?: IDataObj[];
 }
 
 const groupByGateway = groupBy<IDataObj>(propOr("N/A", "gateway"));
