@@ -1,5 +1,5 @@
-import symmetricDifference from "ramda/src/symmetricDifference";
 import filter from "ramda/src/filter";
+import intersection from "ramda/src/intersection";
 import propEq from "ramda/src/propEq";
 import { TreeItem } from "@mui/x-tree-view";
 import { useTheme } from "@mui/material/styles";
@@ -23,10 +23,12 @@ export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
   const theme = useTheme();
   const { data: prevData } = usePrevDataContext();
 
-  const filterData = filterDataByGateway(props.gateway);
-  const filteredPrevData = filterData(prevData);
+  const filterGatewayData = filterDataByGateway(props.gateway);
 
-  const differentData = symmetricDifference(data, filteredPrevData);
+  const filteredPrevData = filterGatewayData(prevData);
+  const filteredNewData = filterGatewayData(data);
+
+  const differentData = intersection(filteredPrevData, filteredNewData);
 
   return (
     <TreeItem
@@ -35,11 +37,11 @@ export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
         <TreeItemLabel
           qty={data.length}
           label={props.gateway}
-          color={differentData.length ? theme.palette.error.main : undefined}
+          color={!differentData.length ? theme.palette.error.main : undefined}
         />
       }
     >
-      {data.map((item, idx) => {
+      {data.map((item) => {
         const prevData = filteredPrevData.find(
           (prevItem) =>
             prevItem.destination === item.destination &&
