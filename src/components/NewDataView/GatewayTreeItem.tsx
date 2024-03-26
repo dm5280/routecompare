@@ -1,5 +1,7 @@
 import filter from "ramda/src/filter";
 import intersection from "ramda/src/intersection";
+import difference from "ramda/src/difference";
+import symmetricDifference from "ramda/src/symmetricDifference";
 import propEq from "ramda/src/propEq";
 import { TreeItem } from "@mui/x-tree-view";
 import { useTheme } from "@mui/material/styles";
@@ -19,16 +21,20 @@ interface IProps {
 const filterDataByGateway = (gateway: string) =>
   filter(propEq(gateway, "gateway"));
 
+const filterDataByProtocol = (protocol: string) =>
+  filter((item: IDataObj) => item.protocol.startsWith(`[${protocol}/`));
+
 export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
   const theme = useTheme();
   const { data: prevData } = usePrevDataContext();
 
   const filterGatewayData = filterDataByGateway(props.gateway);
+  const filterProtocolData = filterDataByProtocol(props.protocol);
 
-  const filteredPrevData = filterGatewayData(prevData);
+  const filteredPrevData = filterProtocolData(filterGatewayData(prevData));
   const filteredNewData = filterGatewayData(data);
 
-  const differentData = intersection(filteredPrevData, filteredNewData);
+  const differentData = symmetricDifference(filteredPrevData, filteredNewData);
 
   return (
     <TreeItem
@@ -37,7 +43,7 @@ export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
         <TreeItemLabel
           qty={data.length}
           label={props.gateway}
-          color={!differentData.length ? theme.palette.error.main : undefined}
+          color={differentData.length ? theme.palette.error.main : undefined}
         />
       }
     >
