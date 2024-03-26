@@ -8,13 +8,12 @@ import { GatewayTreeItem } from "./GatewayTreeItem";
 
 interface IProps {
   protocol: string;
-  rootIdx: string;
   data: Partial<Record<string, IDataObj[]>>;
 }
 
-export const ProtocolTreeItem = ({ protocol, rootIdx, data }: IProps) => (
+export const ProtocolTreeItem = ({ protocol, data }: IProps) => (
   <TreeItem
-    itemId={intersperseDashToString([protocol, rootIdx])}
+    itemId={protocol}
     label={
       <TreeItemLabel
         qty={Object.keys(data).length}
@@ -22,12 +21,12 @@ export const ProtocolTreeItem = ({ protocol, rootIdx, data }: IProps) => (
       />
     }
   >
-    {Object.entries(data).map(([key, value], idx) => (
+    {Object.entries(data).map(([key, value]) => (
       <GatewayTreeItem
         data={value}
         gateway={key}
-        rootIdx={intersperseDashToString([rootIdx, String(idx)])}
-        key={intersperseDashToString([key, rootIdx, String(idx)])}
+        protocol={protocol}
+        key={intersperseDashToString([protocol, key])}
       />
     ))}
   </TreeItem>

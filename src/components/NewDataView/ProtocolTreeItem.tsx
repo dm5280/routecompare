@@ -14,7 +14,6 @@ import { GatewayTreeItem } from "./GatewayTreeItem";
 
 interface IProps {
   protocol: string;
-  rootIdx: string;
   data?: IDataObj[];
 }
 
@@ -23,7 +22,7 @@ const groupByGateway = groupBy<IDataObj>(propOr("N/A", "gateway"));
 const filterDataByProtocol = (protocol: string) =>
   filter((item: IDataObj) => item.protocol.startsWith(`[${protocol}/`));
 
-export const ProtocolTreeItem = ({ protocol, rootIdx, data = [] }: IProps) => {
+export const ProtocolTreeItem = ({ protocol, data = [] }: IProps) => {
   const theme = useTheme();
   const { data: prevData } = usePrevDataContext();
   const groupedData = groupByGateway(data);
@@ -34,7 +33,7 @@ export const ProtocolTreeItem = ({ protocol, rootIdx, data = [] }: IProps) => {
 
   return (
     <TreeItem
-      itemId={intersperseDashToString([protocol, rootIdx])}
+      itemId={protocol}
       label={
         <TreeItemLabel
           qty={Object.keys(data).length}
@@ -43,12 +42,12 @@ export const ProtocolTreeItem = ({ protocol, rootIdx, data = [] }: IProps) => {
         />
       }
     >
-      {Object.entries(groupedData).map(([key, value], idx) => (
+      {Object.entries(groupedData).map(([key, value]) => (
         <GatewayTreeItem
           data={value}
           gateway={key}
-          rootIdx={intersperseDashToString([rootIdx, String(idx)])}
-          key={intersperseDashToString([key, rootIdx, String(idx)])}
+          protocol={protocol}
+          key={intersperseDashToString([protocol, key])}
         />
       ))}
     </TreeItem>

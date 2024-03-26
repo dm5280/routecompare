@@ -12,7 +12,7 @@ import { TreeItemLabel } from "./TreeItemLabel";
 
 interface IProps {
   gateway: string;
-  rootIdx: string;
+  protocol: string;
   data?: IDataObj[];
 }
 
@@ -30,7 +30,7 @@ export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
 
   return (
     <TreeItem
-      itemId={intersperseDashToString([props.gateway, props.rootIdx])}
+      itemId={intersperseDashToString([props.protocol, props.gateway])}
       label={
         <TreeItemLabel
           qty={data.length}
@@ -51,11 +51,11 @@ export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
           <DestinationTreeItem
             isHighlighted={!prevData}
             destination={item.destination}
-            rootIdx={intersperseDashToString([props.rootIdx, String(idx)])}
+            rootId={intersperseDashToString([props.protocol, props.gateway])}
             key={intersperseDashToString([
+              props.protocol,
+              props.gateway,
               item.destination,
-              props.rootIdx,
-              String(idx),
             ])}
           />
         );

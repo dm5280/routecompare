@@ -5,7 +5,6 @@ import compose from "ramda/src/compose";
 import mapObjIndexed from "ramda/src/mapObjIndexed";
 import { IDataObj } from "$/types";
 import Typography from "@mui/material/Typography";
-import { intersperseDashToString } from "$/helpers/intersperseDashToString";
 import { usePrevDataContext } from "$/providers/PrevDataProvider";
 
 import { ProtocolTreeItem } from "./ProtocolTreeItem";
@@ -31,8 +30,28 @@ const handleGateway = mapObjIndexed(groupByGateway);
 const transformData = compose(handleGateway, groupByProtocol as any);
 
 export const PrevDataView = () => {
-  const { data } = usePrevDataContext();
+  const {
+    data,
+    selectedDestination,
+    expandedItems,
+    setExpandedItems,
+    setSelectedDestination,
+  } = usePrevDataContext();
   const groupedData = transformData(data);
+
+  const handleExpandedItemsChange = (
+    _: React.SyntheticEvent,
+    itemIds: string[]
+  ) => {
+    setExpandedItems(itemIds);
+  };
+
+  const handleSelectedItemsChange = (
+    _: React.SyntheticEvent,
+    id: string | null
+  ) => {
+    setSelectedDestination(id);
+  };
 
   if (!data.length) {
     return (
@@ -43,14 +62,14 @@ export const PrevDataView = () => {
   }
 
   return (
-    <SimpleTreeView>
-      {Object.entries(groupedData).map(([key, value], idx) => (
-        <ProtocolTreeItem
-          data={value}
-          protocol={key}
-          rootIdx={String(idx)}
-          key={intersperseDashToString([key, String(idx)])}
-        />
+    <SimpleTreeView
+      expandedItems={expandedItems}
+      selectedItems={selectedDestination}
+      onSelectedItemsChange={handleSelectedItemsChange}
+      onExpandedItemsChange={handleExpandedItemsChange}
+    >
+      {Object.entries(groupedData).map(([key, value]) => (
+        <ProtocolTreeItem data={value} protocol={key} key={key} />
       ))}
     </SimpleTreeView>
   );

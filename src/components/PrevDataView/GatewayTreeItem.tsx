@@ -7,7 +7,7 @@ import { TreeItemLabel } from "./TreeItemLabel";
 
 interface IProps {
   gateway: string;
-  rootIdx: string;
+  protocol: string;
   isCompareView?: boolean;
   data?: IDataObj[];
   dataToCompare?: IDataObj[];
@@ -15,17 +15,17 @@ interface IProps {
 
 export const GatewayTreeItem = ({ data = [], ...props }: IProps) => (
   <TreeItem
-    itemId={props.gateway + "-" + props.rootIdx}
+    itemId={intersperseDashToString([props.protocol, props.gateway])}
     label={<TreeItemLabel qty={data.length} label={props.gateway} />}
   >
     {data.map((item, idx) => (
       <DestinationTreeItem
         destination={item.destination}
-        rootIdx={intersperseDashToString([props.rootIdx, String(idx)])}
+        rootId={intersperseDashToString([props.protocol, props.gateway])}
         key={intersperseDashToString([
+          props.protocol,
+          props.gateway,
           item.destination,
-          props.rootIdx,
-          String(idx),
         ])}
       />
     ))}
