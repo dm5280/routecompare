@@ -4,10 +4,10 @@ import { TreeItem } from "@mui/x-tree-view";
 import groupBy from "ramda/src/groupBy";
 import difference from "ramda/src/difference";
 import propOr from "ramda/src/propOr";
+import { intersperseDashToString } from "$/helpers/intersperseDashToString";
 
 import { GatewayTreeItem } from "./GatewayTreeItem";
 import { TreeItemLabel } from "./TreeItemLabel";
-import { intersperseDashToString } from "$/helpers/intersperseDashToString";
 
 interface IProps {
   protocol: string;
@@ -27,12 +27,13 @@ const MAP_PROTOCOLS: Record<string, string> = {
   "N/A": "N/A",
 };
 
-const groupByGateway = groupBy<IDataObj>(propOr("N/A", "gateway"));
-
 const filterPrevGateway =
   (dataToCompare: IDataObj[] = []) =>
   (key?: string) =>
     dataToCompare.filter((item) => item.gateway === key);
+
+const filterDiff = (diffData: IDataObj[], protocol: string) =>
+  diffData.filter((item) => item.protocol.startsWith(`[${protocol}/`));
 
 export const ProtocolTreeItem = ({
   data = [],
@@ -41,26 +42,24 @@ export const ProtocolTreeItem = ({
   protocol,
   rootIdx,
 }: IProps) => {
-  const groupedData = groupByGateway(data);
   const theme = useTheme();
 
   const isHighlighted =
-    dataToCompare.length && dataToCompare.length !== data.length;
-
-  const getPrevGateway = filterPrevGateway(dataToCompare);
+    isCompareView &&
+    filterDiff(difference([data], [dataToCompare]).flat(2), protocol).length;
 
   return (
     <TreeItem
       itemId={intersperseDashToString([protocol, rootIdx])}
       label={
         <TreeItemLabel
-          label={MAP_PROTOCOLS[protocol]}
           qty={data.length}
+          label={MAP_PROTOCOLS[protocol]}
           color={isHighlighted ? theme.palette.error.main : undefined}
         />
       }
     >
-      {Object.entries(groupedData).map(([key, value], idx) => {
+      {/* {Object.entries(groupedData).map(([key, value], idx) => {
         const prevGateway = getPrevGateway(key);
 
         return (
@@ -73,7 +72,7 @@ export const ProtocolTreeItem = ({
             key={intersperseDashToString([key, rootIdx, String(idx)])}
           />
         );
-      })}
+      })} */}
     </TreeItem>
   );
 };

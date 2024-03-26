@@ -4,14 +4,11 @@ import propOr from "ramda/src/propOr";
 import compose from "ramda/src/compose";
 import mapObjIndexed from "ramda/src/mapObjIndexed";
 import { IDataObj } from "$/types";
+import Typography from "@mui/material/Typography";
 import { intersperseDashToString } from "$/helpers/intersperseDashToString";
+import { usePrevDataContext } from "$/providers/PrevDataProvider";
 
 import { ProtocolTreeItem } from "./ProtocolTreeItem";
-
-interface IProps {
-  data: IDataObj[];
-  dataToCompare?: IDataObj[];
-}
 
 const PROTOCOL_REGEX = /\[(\d+)\/\d+\]/;
 
@@ -31,8 +28,19 @@ const groupByGateway = groupBy<IDataObj>(propOr("N/A", "gateway"));
 
 const handleGateway = mapObjIndexed(groupByGateway);
 
-export const RoutesView = ({ dataToCompare = [], ...props }: IProps) => {
-  const groupedData = groupByProtocol(props.data);
+const transformData = compose(handleGateway, groupByProtocol as any);
+
+export const PrevDataView = () => {
+  const { data } = usePrevDataContext();
+  const groupedData = transformData(data);
+
+  if (!data.length) {
+    return (
+      <Typography align="center" color="textSecondary">
+        Please, upload a file
+      </Typography>
+    );
+  }
 
   return (
     <SimpleTreeView>
@@ -41,8 +49,6 @@ export const RoutesView = ({ dataToCompare = [], ...props }: IProps) => {
           data={value}
           protocol={key}
           rootIdx={String(idx)}
-          dataToCompare={dataToCompare}
-          isCompareView={!!dataToCompare?.length}
           key={intersperseDashToString([key, String(idx)])}
         />
       ))}

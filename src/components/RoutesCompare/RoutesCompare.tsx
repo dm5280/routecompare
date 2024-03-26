@@ -1,13 +1,13 @@
 "use client";
-import { useState } from "react";
 import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { UploadFile } from "$/components/UploadFile";
 import { useMediaQuery } from "$/hooks/useMediaQuery";
-import { RoutesView } from "$/components/RoutesView";
-
-import { ScrollWrapper } from "../ScrollWrapper";
+import { usePrevDataContext } from "$/providers/PrevDataProvider";
+import { useNewDataContext } from "$/providers/NewDataProvider";
+import { ScrollWrapper } from "$/components/ScrollWrapper";
+import { PrevDataView } from "$/components/PrevDataView";
+import { NewDataView } from "$/components/NewDataView";
 
 const mapDataToKeys = (data: string[][]) =>
   data.map(([destination = "N/A", gateway = "N/A", protocol = "N/A"]) => ({
@@ -18,16 +18,16 @@ const mapDataToKeys = (data: string[][]) =>
 
 export const RoutesCompare = () => {
   const { isUpMd } = useMediaQuery();
-  const [leftData, setLeftData] = useState<string[][]>([]);
-  const [rightData, setRightData] = useState<string[][]>([]);
+  const { setData: setPrevData } = usePrevDataContext();
+  const { setData: setNewData } = useNewDataContext();
 
   const onRightUploadAccepted = (result: { data: string[][] }) =>
-    setRightData(result.data);
+    setNewData(mapDataToKeys(result.data));
   const onLeftUploadAccepted = (result: { data: string[][] }) =>
-    setLeftData(result.data);
+    setPrevData(mapDataToKeys(result.data));
 
-  const onRightUploadRemoved = () => setRightData([]);
-  const onLeftUploadRemoved = () => setLeftData([]);
+  const onRightUploadRemoved = () => setNewData([]);
+  const onLeftUploadRemoved = () => setPrevData([]);
 
   return (
     <Grid
@@ -42,19 +42,12 @@ export const RoutesCompare = () => {
           <Grid container gap={4} direction="column">
             <Grid item>
               <UploadFile
-                onUploadAccepted={onLeftUploadAccepted}
                 onRemoveFile={onLeftUploadRemoved}
+                onUploadAccepted={onLeftUploadAccepted}
               />
             </Grid>
             <Grid item xs>
-              {!!leftData.length && (
-                <RoutesView data={mapDataToKeys(leftData)} />
-              )}
-              {!leftData.length && (
-                <Typography align="center" color="textSecondary">
-                  Please, upload a file
-                </Typography>
-              )}
+              <PrevDataView />
             </Grid>
           </Grid>
         </ScrollWrapper>
@@ -77,17 +70,7 @@ export const RoutesCompare = () => {
               />
             </Grid>
             <Grid item xs>
-              {!!rightData.length && (
-                <RoutesView
-                  data={mapDataToKeys(rightData)}
-                  dataToCompare={mapDataToKeys(leftData)}
-                />
-              )}
-              {!rightData.length && (
-                <Typography align="center" color="textSecondary">
-                  Please, upload a file
-                </Typography>
-              )}
+              <NewDataView />
             </Grid>
           </Grid>
         </ScrollWrapper>
