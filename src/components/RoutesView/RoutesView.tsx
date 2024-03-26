@@ -1,6 +1,7 @@
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 import groupBy from "ramda/src/groupBy";
 import { IDataObj } from "$/types";
+import { intersperseDashToString } from "$/helpers/intersperseDashToString";
 
 import { ProtocolTreeItem } from "./ProtocolTreeItem";
 
@@ -11,7 +12,7 @@ interface IProps {
 
 const PROTOCOL_REGEX = /\[(\d+)\/\d+\]/;
 
-const handleProtocol = (data: IDataObj) => {
+const handleProtocol = (data: IDataObj): string => {
   const splitedProtocol = data.protocol?.match(PROTOCOL_REGEX);
 
   if (!splitedProtocol) {
@@ -39,15 +40,14 @@ export const RoutesView = (props: IProps) => {
     <SimpleTreeView>
       {Object.entries(groupedData).map(([key, value], idx) => {
         const prevProtocol = getPrevProtocol(key);
-
         return (
           <ProtocolTreeItem
             data={value}
             protocol={key}
             rootIdx={String(idx)}
-            key={key + "-" + idx}
             dataToCompare={prevProtocol}
             isCompareView={!!props.dataToCompare?.length}
+            key={intersperseDashToString([key, String(idx)])}
           />
         );
       })}

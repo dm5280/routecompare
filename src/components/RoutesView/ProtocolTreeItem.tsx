@@ -2,10 +2,12 @@ import { useTheme } from "@mui/material/styles";
 import { IDataObj } from "$/types";
 import { TreeItem } from "@mui/x-tree-view";
 import groupBy from "ramda/src/groupBy";
+import difference from "ramda/src/difference";
 import propOr from "ramda/src/propOr";
 
 import { GatewayTreeItem } from "./GatewayTreeItem";
 import { TreeItemLabel } from "./TreeItemLabel";
+import { intersperseDashToString } from "$/helpers/intersperseDashToString";
 
 interface IProps {
   protocol: string;
@@ -14,6 +16,16 @@ interface IProps {
   dataToCompare?: IDataObj[];
   isCompareView?: boolean;
 }
+
+const MAP_PROTOCOLS: Record<string, string> = {
+  "200": "iBGP",
+  "20": "eBGP",
+  "90": "iEIGRP",
+  "170": "eEIGRP",
+  "1": "Static",
+  "0": "Direct",
+  "N/A": "N/A",
+};
 
 const groupByGateway = groupBy<IDataObj>(propOr("N/A", "gateway"));
 
@@ -39,10 +51,10 @@ export const ProtocolTreeItem = ({
 
   return (
     <TreeItem
-      itemId={protocol + "-" + rootIdx}
+      itemId={intersperseDashToString([protocol, rootIdx])}
       label={
         <TreeItemLabel
-          label={protocol}
+          label={MAP_PROTOCOLS[protocol]}
           qty={data.length}
           color={isHighlighted ? theme.palette.error.main : undefined}
         />
@@ -56,9 +68,9 @@ export const ProtocolTreeItem = ({
             data={value}
             gateway={key}
             dataToCompare={prevGateway}
-            rootIdx={rootIdx + "-" + idx}
             isCompareView={isCompareView}
-            key={key + "-" + rootIdx + "-" + idx}
+            rootIdx={intersperseDashToString([rootIdx, String(idx)])}
+            key={intersperseDashToString([key, rootIdx, String(idx)])}
           />
         );
       })}

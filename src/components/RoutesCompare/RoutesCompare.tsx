@@ -1,10 +1,12 @@
 "use client";
 import { useState } from "react";
 import Grid from "@mui/material/Grid";
-import { Divider } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
 import { UploadFile } from "$/components/UploadFile";
 import { useMediaQuery } from "$/hooks/useMediaQuery";
 import { RoutesView } from "$/components/RoutesView";
+
 import { ScrollWrapper } from "../ScrollWrapper";
 
 const mapDataToKeys = (data: string[][]) =>
@@ -44,11 +46,16 @@ export const RoutesCompare = () => {
                 onRemoveFile={onLeftUploadRemoved}
               />
             </Grid>
-            {!!leftData.length && (
-              <Grid item xs>
+            <Grid item xs>
+              {!!leftData.length && (
                 <RoutesView data={mapDataToKeys(leftData)} />
-              </Grid>
-            )}
+              )}
+              {!leftData.length && (
+                <Typography align="center" color="textSecondary">
+                  Please, upload a file
+                </Typography>
+              )}
+            </Grid>
           </Grid>
         </ScrollWrapper>
       </Grid>
@@ -69,14 +76,19 @@ export const RoutesCompare = () => {
                 onRemoveFile={onRightUploadRemoved}
               />
             </Grid>
-            {!!rightData.length && (
-              <Grid item xs>
+            <Grid item xs>
+              {!!rightData.length && (
                 <RoutesView
                   data={mapDataToKeys(rightData)}
                   dataToCompare={mapDataToKeys(leftData)}
                 />
-              </Grid>
-            )}
+              )}
+              {!rightData.length && (
+                <Typography align="center" color="textSecondary">
+                  Please, upload a file
+                </Typography>
+              )}
+            </Grid>
           </Grid>
         </ScrollWrapper>
       </Grid>
