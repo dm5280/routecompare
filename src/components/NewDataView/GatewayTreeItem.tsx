@@ -1,5 +1,4 @@
 import filter from "ramda/src/filter";
-import intersection from "ramda/src/intersection";
 import difference from "ramda/src/difference";
 import symmetricDifference from "ramda/src/symmetricDifference";
 import propEq from "ramda/src/propEq";
@@ -43,6 +42,8 @@ export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
         <TreeItemLabel
           qty={data.length}
           label={props.gateway}
+          added={difference(filteredNewData, filteredPrevData).length}
+          removed={difference(filteredPrevData, filteredNewData).length}
           color={differentData.length ? theme.palette.error.main : undefined}
         />
       }

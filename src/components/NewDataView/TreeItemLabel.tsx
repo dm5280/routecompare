@@ -16,10 +16,21 @@ export const TreeItemLabel = (props: IProps) => (
     <Typography color={props.color}>{props.label}</Typography>
     <Box flexGrow={1} ml={1}>
       {!!props.added && (
-        <Chip label={`+${props.added}`} size="small" color="warning" />
+        <Chip
+          label={`+${props.added}`}
+          size="small"
+          color="success"
+          variant="outlined"
+          sx={{ mr: 1 }}
+        />
       )}
       {!!props.removed && (
-        <Chip label={`-${props.removed}`} size="small" color="warning" />
+        <Chip
+          label={`-${props.removed}`}
+          size="small"
+          color="error"
+          variant="outlined"
+        />
       )}
     </Box>
     {props.qty && <Typography color={props.color}>{props.qty}</Typography>}
