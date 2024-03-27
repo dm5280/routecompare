@@ -8,6 +8,7 @@ import { useNewDataContext } from "$/providers/NewDataProvider";
 import { ScrollWrapper } from "$/components/ScrollWrapper";
 import { PrevDataView } from "$/components/PrevDataView";
 import { NewDataView } from "$/components/NewDataView";
+import { CompareSummary } from "../CompareSummary";
 
 const mapDataToKeys = (data: string[][]) =>
   data.map(([destination = "N/A", gateway = "N/A", protocol = "N/A"]) => ({
@@ -18,8 +19,8 @@ const mapDataToKeys = (data: string[][]) =>
 
 export const RoutesCompare = () => {
   const { isUpMd } = useMediaQuery();
-  const { setData: setPrevData } = usePrevDataContext();
-  const { setData: setNewData } = useNewDataContext();
+  const { setData: setPrevData, data: prevData } = usePrevDataContext();
+  const { setData: setNewData, data: newData } = useNewDataContext();
 
   const onRightUploadAccepted = (result: { data: string[][] }) =>
     setNewData(mapDataToKeys(result.data));
@@ -72,6 +73,11 @@ export const RoutesCompare = () => {
             <Grid item xs>
               <NewDataView />
             </Grid>
+            {!!prevData.length && !!newData.length && (
+              <Grid item>
+                <CompareSummary />
+              </Grid>
+            )}
           </Grid>
         </ScrollWrapper>
       </Grid>
