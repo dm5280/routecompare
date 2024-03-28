@@ -8,7 +8,6 @@ interface IProps {
   color?: string;
   qty?: number | string;
   added?: number;
-  removed?: number;
 }
 
 export const TreeItemLabel = (props: IProps) => (
@@ -22,14 +21,6 @@ export const TreeItemLabel = (props: IProps) => (
           color="success"
           variant="outlined"
           sx={{ mr: 1 }}
-        />
-      )}
-      {!!props.removed && (
-        <Chip
-          label={`-${props.removed}`}
-          size="small"
-          color="error"
-          variant="outlined"
         />
       )}
     </Box>

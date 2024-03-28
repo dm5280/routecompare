@@ -43,7 +43,6 @@ export const GatewayTreeItem = ({ data = [], ...props }: IProps) => {
           qty={data.length}
           label={props.gateway}
           added={difference(filteredNewData, filteredPrevData).length}
-          removed={difference(filteredPrevData, filteredNewData).length}
           color={differentData.length ? theme.palette.error.main : undefined}
         />
       }
